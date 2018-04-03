@@ -1,0 +1,39 @@
+FST&GRM
+Train WFST & LM
+
+1 Experiment with different Language Model parameters
+ 1.1 ngram size
+ 1.2 smoothing
+2 Take care of unknown words e.g. lexicon frequency cut-off
+(1)
+- Create a lexicon with ngramsymbols
+- use farcompilestrings to create the far file
+- ngramcount --order=N varying N to "experiment" (1.1)
+- ngrammake such as in the bash script (1.2)
+- create the wfst and test it
+- implement the cut-off dataset changing the probability of the unkown words
+(2)
+create a file for conlleval with this layout
+w pos label predicted
+. . 0 0
+
+w = word
+pos = its part-of-speech tag (POS)
+label = the chunk tag according to the corpus
+predicted = the predicted chunk tag
+0 to end the phrase
+
+Every column is not fixed, so FIRST create a file without POS and test the performance,
+then add them and do the tests again
+
+Expected Performance: F1 ≈ 76
+
+=======================
+
+Train LM using the words & concept tags 
+Implement the tagging pipeline to make use of that 
+Evaluate and compare
+
+POS-tagger (just like in the last lab lesson)
+
+Expected Performance: F1 ≈ 82
