@@ -43,12 +43,19 @@ def graph():
                 w = -math.log(p)
                 gr.write("0\t0\t"+words[i].split("\n")[0]+"\t"+tags[i]+"\t"+str(w)+"\n")
             i += 1
-        gr.write("0")
-def unk_graph():
-    with open("unk_graph.txt", "w") as un:
         for tag in tags:
-            un.write("0\t0\t<unk>\t"+tag+"\t"+str(float(1/len(tags)))+"\n")
-        un.write("0")
+            if (tag) not in done:
+                gr.write("0\t0\t<unk>\t"+tag+"\t"+str(float(1/len(tags)))+"\n")
+                done.append(tag)
+        gr.write("0")
+
+
+def init():
+    read_data()
+    words_lexicon()
+    tags_lexicon()
+    graph()
+
 
 ###################################################
 ###################################################
@@ -60,21 +67,11 @@ tags = []
 freq_bigram = {}
 freq_labels = {}
 
-
 ###################################################
 ###################################################
 ###################################################
 ###################################################
 
+init()
 
-read_data()
-words_lexicon()
-tags_lexicon()
-graph()
-unk_graph()
-call(["ngramsymbols", "words.txt", "words.lex"])
-call(["ngramsymbols", "tags.txt", "tags.lex"])
-fst = Popen(["fstcompile", "--isymbols=words.lex", "--osymbols=tags.lex", "graph.txt"], stdout=open("train.fst","w"))
-unk = Popen(["fstcompile", "--isymbols=words.lex", "--osymbols=tags.lex", "unk_graph.txt"], stdout=open("unk.fst","w"))
-# union = Popen(["fstcompose", "train.fst", "unk.fst"], stdout=open("complete_train.fst", "w"))
-
+Popen(["./sequence.sh"])
