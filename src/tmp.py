@@ -8,8 +8,18 @@ def prob(word, tag):
         return float(freq_bigram[bigram])/float(freq_labels[tag])
 
 def read_data():
+    phrases = []
+    sentence = ""
     with open("../P1_data/data/NLSPARQL.train.data", "r") as tr:
         for line in tr.readlines():
+            if line == "\n":
+                print(sentence)
+                phrases.append(sentence)
+                sentence = ""
+            else:
+                # print(line.split("\t")[1].split("\n")[0])
+                sentence = sentence+" "+line.split("\t")[1].split("\n")[0]
+                # print (sentence)
             splitted = line.split("\t")
             if len(splitted) > 1:
                 splitted[1] = splitted[1].split("\n")[0]
@@ -24,13 +34,23 @@ def read_data():
                 else:
                     freq_labels[splitted[1]] += 1
 
+    with open("frequence_bigram.txt", "w") as fr:
+        for bigram in freq_bigram:
+            fr.write(str(bigram)+": "+str(freq_bigram[bigram])+"\n")
+    with open("frequence_label.txt", "w") as fr:
+        for lab in freq_labels:
+            fr.write(lab+": "+str(freq_labels[lab])+"\n")
+    with open("iob-phrases.txt", "w") as iob:
+        for sentence in phrases:
+            iob.write(sentence+"\n")
+
+
+
 def words_lexicon():            
     with open("words.txt", "w") as wr:
         wr.writelines("\n".join(words))
-
-def tags_lexicon():
-    with open("tags.txt", "w") as tg:
-        tg.writelines("\n".join(tags))
+        wr.write("\n")
+        wr.writelines("\n".join(tags))
 
 def graph():
     with open("graph.txt", "w") as gr:
@@ -41,6 +61,7 @@ def graph():
                 done.append((words[i], tags[i]))
                 p = prob(words[i], tags[i])
                 w = -math.log(p)
+                # print(str(w))
                 gr.write("0\t0\t"+words[i].split("\n")[0]+"\t"+tags[i]+"\t"+str(w)+"\n")
             i += 1
         for tag in tags:
@@ -50,11 +71,31 @@ def graph():
         gr.write("0")
 
 
+def divide_test():
+    phrases = []
+    sentence = ""
+    with open("../P1_Data/data/NLSPARQL.test.data", "r") as ts:
+        for line in ts.readlines():
+            if line == "\n":
+                phrases.append(sentence)
+                sentence = ""
+            else:
+                word, tag = line.split("\t")
+                sentence = sentence + ' ' + word
+
+    with open("test_modified.txt", "w") as t:
+        for phrase in phrases:
+            t.write(phrase+"\n")
+
+
+
+
 def init():
     read_data()
     words_lexicon()
-    tags_lexicon()
+    # tags_lexicon()
     graph()
+    # divide_test()
 
 
 ###################################################
@@ -73,5 +114,5 @@ freq_labels = {}
 ###################################################
 
 init()
-
+# divide_test()
 Popen(["./sequence.sh"])

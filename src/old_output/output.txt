@@ -31582,3 +31582,7 @@
 0	1	up	I-movie.release_date	4.73619843
 1	2	<unk>	O	4.6613528e-05
 2
+0	1	star	O	12.1967239
+1	2	of	O	8.34464455
+2	3	thor	B-movie.name	17.2193222
+3	0.693147659
