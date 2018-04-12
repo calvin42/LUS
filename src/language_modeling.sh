@@ -17,5 +17,5 @@ do
     done
 done
 
-rm lm/*.far
-rm lm/*.cnts
+# rm lm/*.far
+# rm lm/*.cnts
