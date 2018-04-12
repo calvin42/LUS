@@ -11,7 +11,7 @@ for method in methods:
     for i in range(1, 6):
         k = 0
         output = []
-        filename = "output-"+str(i)+"-"+method+".txt"
+        filename = "predicted/output-"+str(i)+"-"+method+".txt"
         with open(filename, "r") as f:
             for line in f.readlines():
                 if k < len(tags):

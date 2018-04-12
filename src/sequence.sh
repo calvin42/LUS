@@ -19,4 +19,9 @@ fstcompile --isymbols=words.lex --osymbols=words.lex graph.txt > train.fst
 ./execute.sh presmoothed
 ./execute.sh unsmoothed
 ./execute.sh witten_bell
-# python3 eval.py
+mkdir predicted
+mv output-*.txt predicted
+python3 eval.py
+mkdir evaluations
+mv eval_output*.txt evaluations
+./eval.sh
