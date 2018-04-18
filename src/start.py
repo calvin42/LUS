@@ -1,19 +1,41 @@
 from subprocess import check_output, call, Popen
-import math
 from collections import Counter
+import math
+import sys
+
 
 def prob(word, tag):
     bigram = (word, tag)
     if freq_bigram.get(bigram) is not None:
         return float(freq_bigram[bigram])/float(freq_labels[tag])
 
-def read_data():
+
+def transform(word, tag):
+    tmp = tag.split("-")[0]
+    return tmp+"-"+word
+
+def prepare_o_data():
+    with open("../P1_data/data/NLSPARQL.train.data", "r") as tr:
+        with open("../P1_data/data/NLSPARQL.train.o.data.txt", "w") as o:
+            for line in tr.readlines():
+                if line == "\n":
+                    o.write("\n")
+                splitted = line.split("\t")
+                if len(splitted) > 1:
+                    splitted[1] = splitted[1].split("\n")[0]
+                    if (splitted[1] == "O"):
+                        o.write(splitted[0]+"\t"+transform(splitted[0], splitted[1])+"\n")
+                    else:
+                        o.write(splitted[0]+"\t"+splitted[1]+"\n")
+
+
+def read_data(filename):
     phrases = []
     sentence = ""
-    with open("../P1_data/data/NLSPARQL.train.data", "r") as tr:
+    with open(filename, "r") as tr:
         for line in tr.readlines():
             if line == "\n":
-                print(sentence)
+                # print(sentence)
                 phrases.append(sentence)
                 sentence = ""
             else:
@@ -40,11 +62,18 @@ def read_data():
     with open("frequence_label.txt", "w") as fr:
         for lab in freq_labels:
             fr.write(lab+": "+str(freq_labels[lab])+"\n")
+    with open("frequence_unigram", "w") as fr:
+        cnt = Counter(words)
+        for el in cnt:
+            fr.write(el+ ": "+str(cnt[el])+"\n")
     with open("iob-phrases.txt", "w") as iob:
+        # print (phrases)
         for sentence in phrases:
             iob.write(sentence+"\n")
-
-
+    # with open("tags-only.txt", "w") as tg:
+    #     for tag in o_tags:
+    #         tg.write()
+    
 
 def words_lexicon():            
     with open("words.txt", "w") as wr:
@@ -60,6 +89,7 @@ def graph():
             if ((words[i], tags[i]) not in done): 
                 done.append((words[i], tags[i]))
                 p = prob(words[i], tags[i])
+                print (words[i], tags[i], p)
                 w = -math.log(p)
                 # print(str(w))
                 gr.write("0\t0\t"+words[i].split("\n")[0]+"\t"+tags[i]+"\t"+str(w)+"\n")
@@ -90,12 +120,12 @@ def divide_test():
 
 
 
-def init():
-    read_data()
+def init(filename):
+    prepare_o_data()
+    read_data(filename)
     words_lexicon()
-    # tags_lexicon()
     graph()
-    # divide_test()
+    divide_test()
 
 
 ###################################################
@@ -105,14 +135,15 @@ def init():
 
 words = []
 tags = []
+o_tags = []
 freq_bigram = {}
 freq_labels = {}
-
+filename = sys.argv[1]
 ###################################################
 ###################################################
 ###################################################
 ###################################################
 
-init()
-# divide_test()
+init(filename)
+
 Popen(["./sequence.sh"])
