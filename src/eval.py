@@ -20,7 +20,7 @@ methods = ["absolute", "katz", "kneser_ney", "presmoothed", "unsmoothed", "witte
 # print(len(tags))
 
 for method in methods:
-    for i in range(1, 6):
+    for i in range(1, 10):
         k = 0
         output = []
         filename = "predicted/output-"+str(i)+"-"+method+".txt"
