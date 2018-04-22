@@ -1,2 +1,0 @@
-28/03/2018
-   Lo script python prende il file di train di base e lo scompone per creare un wfst (i pesi sono il logaritmo negativo della probabilita' della coppia word-tag).
